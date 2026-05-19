@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Win Repository Files</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-900 text-gray-100 font-sans min-h-screen flex flex-col justify-between">
+
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <header class="text-center mb-10">
+            <h1 class="text-4xl font-extrabold text-blue-400 mb-2">
+                <i class="fab fa-github mr-2"></i> teamalfasec / win
+            </h1>
+            <p class="text-gray-400">Repository Files Explorer</p>
+        </header>
+
+        <div class="relative mb-6">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
+                <i class="fas fa-search"></i>
+            </span>
+            <input type="text" id="search-bar" placeholder="Search files..." class="w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-gray-200 focus:outline-none focus:border-blue-500 transition-colors">
+        </div>
+
+        <div class="bg-gray-800 shadow-xl rounded-xl overflow-hidden border border-gray-700">
+            <div class="p-4 bg-gray-700 font-semibold text-gray-300 flex justify-between items-center border-b border-gray-600">
+                <span>File Name</span>
+                <span>Actions</span>
+            </div>
+            <ul id="file-list" class="divide-y divide-gray-700">
+                <li id="loading-state" class="p-8 text-center text-gray-400">
+                    <i class="fas fa-spinner fa-spin mr-2"></i> Loading files from repository...
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <footer class="text-center py-4 text-gray-500 text-sm border-t border-gray-800">
+        &copy; 2026 teamalfasec. Powered by GitHub API.
+    </footer>
+
+    <script>
+        const USERNAME = 'teamalfasec';
+        const REPO = 'win';
+        const API_URL = `https://api.github.com/repos/${USERNAME}/${REPO}/contents/`;
+        const PAGES_BASE_URL = `https://${USERNAME}.github.io/${REPO}/`;
+
+        let allFiles = [];
+
+        async function fetchFiles() {
+            const fileListContainer = document.getElementById('file-list');
+            
+            try {
+                const response = await fetch(API_URL);
+                if (!response.ok) throw new Error('Failed to fetch repository contents');
+                
+                const data = await response.json();
+                
+                // Filter out index.html and directories, we only want files
+                allFiles = data.filter(item => item.type === 'file' && item.name !== 'index.html');
+                
+                if (allFiles.length === 0) {
+                    fileListContainer.innerHTML = `<li class="p-8 text-center text-gray-500">No files found in this repository.</li>`;
+                    return;
+                }
+
+                renderFiles(allFiles);
+
+            } catch (error) {
+                console.error(error);
+                fileListContainer.innerHTML = `
+                    <li class="p-8 text-center text-red-400">
+                        <i class="fas fa-exclamation-triangle mr-2"></i> Error loading files. Please ensure GitHub Pages is active.
+                    </li>`;
+            }
+        }
+
+        function renderFiles(files) {
+            const fileListContainer = document.getElementById('file-list');
+            fileListContainer.innerHTML = '';
+
+            files.forEach(file => {
+                // Determine file icon based on extension
+                let iconClass = 'far fa-file-alt text-gray-400';
+                if (file.name.endsWith('.html')) iconClass = 'fab fa-html5 text-orange-500';
+                else if (file.name.endsWith('.css')) iconClass = 'fab fa-css3-alt text-blue-500';
+                else if (file.name.endsWith('.js')) iconClass = 'fab fa-js text-yellow-500';
+                else if (file.name.endsWith('.png') || file.name.endsWith('.jpg') || file.name.endsWith('.jpeg') || file.name.endsWith('.gif')) iconClass = 'far fa-file-image text-green-500';
+
+                // Pages URL for viewing
+                const fileUrl = `${PAGES_BASE_URL}${file.path}`;
+
+                const li = document.createElement('li');
+                li.className = "p-4 flex justify-between items-center hover:bg-gray-750 transition-colors duration-150";
+                li.innerHTML = `
+                    <div class="flex items-center space-x-3 overflow-hidden mr-4">
+                        <i class="${iconClass} text-xl flex-shrink-0"></i>
+                        <span class="truncate font-medium text-gray-200" title="${file.name}">${file.name}</span>
+                    </div>
+                    <div class="flex items-center space-x-2 flex-shrink-0">
+                        <a href="${fileUrl}" target="_blank" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-md transition-colors flex items-center space-x-1" title="Open in new tab">
+                            <i class="fas fa-external-link-alt"></i>
+                            <span class="hidden sm:inline">Open</span>
+                        </a>
+                        <button onclick="copyToClipboard('${fileUrl}', this)" class="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 text-gray-200 text-xs font-semibold rounded-md transition-colors flex items-center space-x-1" title="Copy file link">
+                            <i class="far fa-copy"></i>
+                            <span class="hidden sm:inline">Copy</span>
+                        </button>
+                    </div>
+                `;
+                fileListContainer.appendChild(li);
+            });
+        }
+
+        // Copy to Clipboard Function
+        function copyToClipboard(text, button) {
+            navigator.clipboard.writeText(text).then(() => {
+                const icon = button.querySelector('i');
+                const span = button.querySelector('span');
+                
+                // Temporary Success State
+                icon.className = 'fas fa-check text-green-400';
+                if(span) span.innerText = 'Copied!';
+                button.classList.add('bg-gray-800');
+
+                setTimeout(() => {
+                    icon.className = 'far fa-copy';
+                    if(span) span.innerText = 'Copy';
+                    button.classList.remove('bg-gray-800');
+                }, 2000);
+            }).catch(err => {
+                alert('Failed to copy link.');
+            });
+        }
+
+        // Real-time Search Filter
+        document.getElementById('search-bar').addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const filteredFiles = allFiles.filter(file => file.name.toLowerCase().includes(searchTerm));
+            renderFiles(filteredFiles);
+        });
+
+        // Initialize fetch on load
+        window.addEventListener('DOMContentLoaded', fetchFiles);
+    </script>
+</body>
+</html>
