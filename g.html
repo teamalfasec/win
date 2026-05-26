@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>account.google.com</title>
+    <style>
+        /* CSS Reset & Variable Definitions */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Google Sans", "Noto Sans Myanmar UI", arial, sans-serif;
+        }
+
+        body {
+            background-color: #f0f4f9;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        /* Responsive Main Container */
+        .container {
+            width: 100%;
+            max-width: 1040px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+        }
+
+        /* Sign-in Card Setup */
+        .signin-card {
+            background-color: #ffffff;
+            border-radius: 28px;
+            width: 100%;
+            padding: 40px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+            min-height: 440px;
+        }
+
+        /* Left Column Structure */
+        .left-section {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .google-logo {
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        h1 {
+            font-size: 36px;
+            font-weight: 400;
+            color: #1f1f1f;
+            line-height: 44px;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            color: #1f1f1f;
+            line-height: 24px;
+        }
+
+        /* Right Column Form Structure */
+        .right-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding-top: 36px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            justify-content: space-between;
+        }
+
+        .form-top {
+            width: 100%;
+        }
+
+        /* Floating Label Input System */
+        .input-group {
+            position: relative;
+            margin-bottom: 9px;
+            width: 100%;
+        }
+
+        .input-field {
+            width: 100%;
+            height: 56px;
+            padding: 16px;
+            font-size: 16px;
+            border: 1px solid #747775;
+            border-radius: 4px;
+            outline: none;
+            color: #1f1f1f;
+            background: transparent;
+            transition: border 0.1s ease;
+        }
+
+        .input-field:focus {
+            border: 2px solid #0b57d0;
+            padding: 15px; /* Compenses for 2px border layout shift */
+        }
+
+        .input-label {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #ffffff;
+            padding: 0 4px;
+            color: #444746;
+            transition: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+            font-size: 16px;
+        }
+
+        /* Floating Label triggers */
+        .input-field:focus ~ .input-label,
+        .input-field:not(:placeholder-shown) ~ .input-label {
+            top: 0;
+            font-size: 12px;
+            color: #0b57d0;
+        }
+
+        .input-field:not(:focus) ~ .input-label {
+            color: #444746;
+        }
+
+        /* Custom Typography & Typography Actions */
+        .link {
+            color: #0b57d0;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            display: inline-block;
+            letter-spacing: .25px;
+        }
+
+        .link:hover {
+            text-decoration: underline;
+        }
+
+        .guest-notice {
+            font-size: 14px;
+            color: #444746;
+            line-height: 20px;
+            margin-top: 32px;
+            letter-spacing: .2px;
+        }
+
+        /* Action Footer Buttons */
+        .actions-wrapper {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 24px;
+            margin-top: 36px;
+            width: 100%;
+        }
+
+        .btn-text {
+            color: #0b57d0;
+            background: none;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 10px 12px;
+            border-radius: 100px;
+            letter-spacing: .25px;
+            transition: background 0.1s;
+        }
+
+        .btn-text:hover {
+            background-color: #f8fafd;
+            color: #004a77;
+        }
+
+        .btn-primary {
+            background-color: #0b57d0;
+            color: white;
+            border: none;
+            padding: 0 24px;
+            height: 40px;
+            border-radius: 100px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            letter-spacing: .25px;
+            transition: background-color 0.1s, box-shadow 0.1s;
+        }
+
+        .btn-primary:hover {
+            background-color: #0b51c5;
+            box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+        }
+
+        /* Global Structural Page Footer */
+        .footer {
+            width: 100%;
+            max-width: 1040px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 24px;
+            padding: 0 16px;
+            font-size: 12px;
+        }
+
+        .language-dropdown {
+            color: #1f1f1f;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 4px;
+        }
+
+        .language-dropdown:hover {
+            background-color: rgba(0,0,0,0.04);
+        }
+
+        .footer-right {
+            display: flex;
+            gap: 16px;
+        }
+
+        .footer-right a {
+            color: #1f1f1f;
+            text-decoration: none;
+            padding: 6px;
+            border-radius: 4px;
+        }
+
+        .footer-right a:hover {
+            background-color: rgba(0,0,0,0.04);
+        }
+
+        /* --- MOBILE BREAKPOINT SYSTEM --- */
+        @media (max-width: 768px) {
+            body {
+                background-color: #ffffff; /* Strip global background gray */
+                padding: 16px;
+                justify-content: flex-start;
+            }
+
+            .container {
+                justify-content: flex-start;
+                max-width: 100%;
+            }
+
+            .signin-card {
+                grid-template-columns: 1fr; /* Convert layout to single stacked column */
+                gap: 0px;
+                padding: 0px;
+                background-color: transparent; /* Remove container boundaries */
+                min-height: auto;
+            }
+
+            .left-section {
+                margin-top: 16px;
+                margin-bottom: 24px;
+            }
+
+            h1 {
+                font-size: 24px;
+                line-height: 32px;
+            }
+
+            .right-section {
+                padding-top: 0px;
+            }
+
+            .guest-notice {
+                margin-top: 24px;
+            }
+
+            .actions-wrapper {
+                margin-top: 40px;
+                margin-bottom: 24px;
+            }
+
+            .footer {
+                max-width: 100%;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+                padding: 16px 0 0 0;
+            }
+
+            .footer-right {
+                margin-left: -6px; /* Balance spacing alignment with active dropdown */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <main class="signin-card">
+            
+            <section class="left-section">
+                <svg class="google-logo" width="40" height="40" viewBox="0 0 24 24" y="48" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/>
+                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"/>
+                </svg>
+                <h1>Sign in</h1>
+                <p class="subtitle">Use your Google Account</p>
+            </section>
+
+            <section class="right-section">
+                <form onsubmit="event.preventDefault();">
+                    <div class="form-top">
+                        <div class="input-group">
+                            <input type="text" id="emailInput" class="input-field" placeholder=" " autocomplete="email" required>
+                            <label for="emailInput" class="input-label">Email or phone</label>
+                        </div>
+                        
+                        <a href="#" class="link">Forgot email?</a>
+                        
+                        <p class="guest-notice">
+                            Not your computer? Use Guest mode to sign in privately. but This is fake google.com<a href="#" class="link">Learn more</a>
+                        </p>
+                    </div>
+                    
+                    <div class="actions-wrapper">
+                        <button type="button" class="btn-text">Create account</button>
+                        <button type="submit" class="btn-primary">Next</button>
+                    </div>
+                </form>
+            </section>
+
+        </main>
+
+        <footer class="footer">
+            <div class="language-dropdown">
+                English (United States) <span style="font-size: 8px; margin-left: 4px;">▼</span>
+            </div>
+            <div class="footer-right">
+                <a href="#">Help</a>
+                <a href="#">Privacy</a>
+                <a href="#">Terms</a>
+            </div>
+        </footer>
+    </div>
+
+</body>
+</html>
